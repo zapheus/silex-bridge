@@ -59,13 +59,11 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterMethod()
     {
-        $user = new Provider(new UserServiceProvider);
+        $providers = array(new UserServiceProvider, new BlogServiceProvider);
 
-        $blog = new Provider(new BlogServiceProvider);
+        $provider = new Provider($providers);
 
-        $container = $user->register($this->container);
-
-        $container = $blog->register($container);
+        $container = $provider->register($this->container);
 
         $container = $this->framework->register($container);
 

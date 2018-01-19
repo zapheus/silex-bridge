@@ -15,24 +15,21 @@ use Zapheus\Provider\ProviderInterface;
  */
 class Provider implements ProviderInterface
 {
-    /**
-     * @var string
-     */
-    protected $container = 'Pimple\Container';
+    const CONTAINER = 'Pimple\Container';
 
     /**
-     * @var \Pimple\ServiceProviderInterface
+     * @var \Pimple\ServiceProviderInterface[]
      */
-    protected $provider;
+    protected $providers;
 
     /**
      * Initializes the provider instance.
      *
-     * @param \Pimple\ServiceProviderInterface $provider
+     * @param \Pimple\ServiceProviderInterface[] $providers
      */
-    public function __construct(ServiceProviderInterface $provider)
+    public function __construct($providers)
     {
-        $this->provider = $provider;
+        $this->providers = $providers;
     }
 
     /**
@@ -43,38 +40,23 @@ class Provider implements ProviderInterface
      */
     public function register(WritableInterface $container)
     {
-        $pimple = $this->container($container);
+        $config = $container->get(self::CONFIG);
 
-        $this->provider->register($pimple);
+        $pimple = $this->defaults(new PimpleContainer);
 
-        return $container->set($this->container, $pimple);
-    }
+        $silex = $config->get('silex', array(), true);
 
-    /**
-     * Returns a \Illuminate\Container\Container instance.
-     *
-     * @param  \Zapheus\Container\WritableInterface $container
-     * @return \Illuminate\Container\Container
-     */
-    protected function container(WritableInterface $container)
-    {
-        if ($container->has($this->container) === false) {
-            $config = $container->get(self::CONFIG);
+        foreach ($silex as $key => $value) {
+            $exists = isset($pimple[$key]);
 
-            $pimple = $this->defaults(new PimpleContainer);
-
-            $silex = $config->get('silex', array(), true);
-
-            foreach ($silex as $key => $value) {
-                $exists = isset($pimple[$key]);
-
-                $exists && $pimple[$key] = $value;
-            }
-
-            return $pimple;
+            $exists && $pimple[$key] = $value;
         }
 
-        return $container->get($this->container);
+        foreach ($this->providers as $provider) {
+            $provider->register($pimple);
+        }
+
+        return $container->set(self::CONTAINER, $pimple);
     }
 
     /**
