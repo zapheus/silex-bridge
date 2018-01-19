@@ -26,7 +26,7 @@ use Zapheus\Bridge\Silex\Provider;
 use Zapheus\Container\Container;
 use Zapheus\Provider\FrameworkProvider;
 
-$providers = array(AuthServiceProvider::class, RoleServiceProvider::class);
+$providers = array(new AuthServiceProvider, new RoleServiceProvider);
 
 $provider = new Provider($providers);
 
