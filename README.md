@@ -22,19 +22,16 @@ $ composer require zapheus/silex-bridge
 ``` php
 use Acme\Providers\AuthServiceProvider;
 use Acme\Providers\RoleServiceProvider;
-use Zapheus\Bridge\Silex\Provider;
+use Zapheus\Bridge\Silex\BridgeProvider;
 use Zapheus\Container\Container;
-use Zapheus\Provider\FrameworkProvider;
 
 $providers = array(new AuthServiceProvider, new RoleServiceProvider);
 
-$provider = new Provider($providers);
+$provider = new BridgeProvider((array) $providers);
 
 $container = $provider->register(new Container);
 
-$framework = new FrameworkProvider;
-
-$container = $framework->register($container);
+$pimple = $container->get(BridgeProvider::CONTAINER);
 ```
 
 ## Change log
