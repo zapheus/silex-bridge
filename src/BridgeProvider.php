@@ -2,18 +2,17 @@
 
 namespace Zapheus\Bridge\Silex;
 
-use Pimple\Container as PimpleContainer;
-use Pimple\ServiceProviderInterface;
+use Pimple\Container;
 use Zapheus\Container\WritableInterface;
 use Zapheus\Provider\ProviderInterface;
 
 /**
- * Provider
+ * Bridge Provider
  *
  * @package Zapheus
  * @author  Rougin Royce Gutib <rougingutib@gmail.com>
  */
-class Provider implements ProviderInterface
+class BridgeProvider implements ProviderInterface
 {
     const CONTAINER = 'Pimple\Container';
 
@@ -40,13 +39,13 @@ class Provider implements ProviderInterface
      */
     public function register(WritableInterface $container)
     {
-        $config = $container->get(self::CONFIG);
+        $pimple = $this->defaults(new Container);
 
-        $pimple = $this->defaults(new PimpleContainer);
+        $config = $container->get(self::CONFIG);
 
         $silex = $config->get('silex', array(), true);
 
-        foreach ($silex as $key => $value) {
+        foreach ((array) $silex as $key => $value) {
             $exists = isset($pimple[$key]);
 
             $exists && $pimple[$key] = $value;
@@ -65,7 +64,7 @@ class Provider implements ProviderInterface
      * @param  \Pimple\Container $pimple
      * @return \Pimple\Container
      */
-    protected function defaults(PimpleContainer $pimple)
+    protected function defaults(Container $pimple)
     {
         $pimple['request.http_port'] = 80;
 
