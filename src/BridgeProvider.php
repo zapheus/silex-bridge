@@ -10,7 +10,7 @@ use Zapheus\Provider\ProviderInterface;
  * Bridge Provider
  *
  * @package Zapheus
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class BridgeProvider implements ProviderInterface
 {
@@ -45,13 +45,16 @@ class BridgeProvider implements ProviderInterface
 
         $silex = $config->get('silex', array(), true);
 
-        foreach ((array) $silex as $key => $value) {
-            $exists = isset($pimple[$key]);
-
-            $exists && $pimple[$key] = $value;
+        foreach ((array) $silex as $key => $value)
+        {
+            if (isset($pimple[$key]))
+            {
+                $pimple[$key] = $value;
+            }
         }
 
-        foreach ($this->providers as $provider) {
+        foreach ($this->providers as $provider)
+        {
             $provider->register($pimple);
         }
 
