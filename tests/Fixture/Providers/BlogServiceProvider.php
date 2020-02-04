@@ -10,7 +10,7 @@ use Zapheus\Bridge\Silex\Fixture\Controllers\BlogController;
  * Blog Service Provider
  *
  * @package Zapheus
- * @author  Rougin Royce Gutib <rougingutib@gmail.com>
+ * @author  Rougin Gutib <rougingutib@gmail.com>
  */
 class BlogServiceProvider implements ServiceProviderInterface
 {
